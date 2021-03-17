@@ -103,6 +103,7 @@ python <path-to-file>/timeseries-vary-energy.py [motif] [signal_status] [signal_
 for example
 ./scripts/timeseries.py ecoli True 15 1 3
 
+Note: When executing timeseries scripts, if signal_status = False, values for signal_0 and signal_length are to be set as 0.
 
 --- Command-line arguments ---
 
