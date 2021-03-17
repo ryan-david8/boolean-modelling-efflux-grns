@@ -1,6 +1,6 @@
 # Dynamic Boolean Modelling of Regulatory Networks.
 
-Python code for the analysis of the dynamics of regulatory networks for bacterial efflux pump acrAB. Modules 'matplotlib' & 'graphviz' are used for visualisation with python.
+Python code for the analysis of the dynamics of regulatory networks for bacterial efflux pump acrAB. Module 'matplotlib' are used for visualisation with python.
 
 ## Requirements
 
@@ -51,7 +51,7 @@ The analysis proceeds through two files (1) & (2), requiring module (3) for exec
 
 The figures in the corresponding manuscript are produced by:
   - Fig 1 -- (schematic plot)
-  - Fig 2 -- timeseries.py 
+  - Fig 2 -- timeseries.py
   - Fig 3 -- timeseries.py
   - Fig 4 -- heatmaps.py
   - Fig S1 -- (schematic plot)
@@ -72,9 +72,9 @@ The below steps describe the steps to run the model code with chosen regulatory 
 Create a clone of Github files locally on your computer through method (i) or (ii):
 - (i) Download directly using the 'Code' --> 'Download' buttons.
 - (ii) Open Terminal (on Mac). Change the current working directory to the location where you want the cloned directory. Type git clone, and then paste the HTTPS clone URL found from clicking the 'Code' button. Press Enter. A directory named 'boolean-efflux' will now be found in the specified location. It will look like this:<br/>
-```sh 
-cd <user-specified-location> 
-git clone https://github.com/StochasticBiology/boolean-efflux.git 
+```sh
+cd <user-specified-location>
+git clone https://github.com/StochasticBiology/boolean-efflux.git
 Cloning into 'boolean-efflux'...
 ```
 
@@ -137,5 +137,3 @@ For new regulatory networks, create initial condition and regulatory architectur
 Script will execute and outputs can be found within 'boolean-efflux' directory.
 
 If there are any questions regarding the included files, email ryan.mathbio@gmail.com
-
-
