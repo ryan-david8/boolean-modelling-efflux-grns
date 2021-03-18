@@ -133,14 +133,12 @@ In the 'boolean-efflux' directory, the 'input-data' sub-directory homes the info
 
 For new regulatory networks, 3 comma-separated values files (.csv) are required:
 1) Initial condition file [filename format: <motif>-ICs.csv]:
-
 | Gene_1 | Gene_2 | ... | Gene_M |
 | :-: | :-: | :-: | :-: |
 | 1 | 0 | ... | 1 |
 | 0 | 0 | ... | 1 |
 | ... | ... | ... | ... |
 | 0 | 0 | ... | 0 |
-
 If no row information is supplied below the column headers, all possible global states (2^M, with M = number of elements in regulatory architecture) are simulated.
 
 2) Regulatory architecture (node-node) [filename format: <motif>-regulation-nodes.csv]:<br/>
