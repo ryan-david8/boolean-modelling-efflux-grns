@@ -1,28 +1,29 @@
 # Dynamic Boolean Modelling of Regulatory Networks.
 
-Python code for the analysis of the dynamics of regulatory networks for bacterial efflux pump acrAB. Module 'matplotlib' are used for visualisation with python.
+Python code to analyse the dynamics of regulatory networks for bacterial efflux pump acrAB. Module 'matplotlib' is used for visualisation with python.
 
 ## Requirements
 
 Before running, ensure you have access to:
 - Python (version 3.7.4 used here)
-  - Required packages:
+  - Required packages for data:
     - numpy
     - pandas
     - random
     - csv
     - sys
     - os
+    - math
+    - datetime
+    - argparse
+    - module_rk (available on Github repository)
+  - Required packages for producing figures:
     - matplotlib
     - matplotlib.pyplot
-    - math
     - scipy.cluster.hierarchy
     - scipy.cluster
-    - datetime
     - matplotlib.ticker
     - module_rk (available on Github repository)
-    - argparse
-
 
 ## Github files
 
@@ -33,21 +34,20 @@ The analysis proceeds through two files (1) & (2), requiring module (3) for exec
 4) timeseries-multi-stress.py
 5) timeseries-vary-energy.py
 
---- File 1 ---
+--- File 1 ---<br/>
 ** heatmaps.py -- applies energy-dependent Boolean modelling framework to regulatory networks to gather state space data i.e. the accessible transitions for each network state.
 
---- File 2 ---
+--- File 2 ---<br/>
 ** timeseries.py -- applies energy-dependent Boolean modelling framework to regulatory networks to gather time evolution data for the mean activation of each network component.
 
---- File 3 ---
+--- File 3 ---<br/>
 ** module_rk.py -- self-defined functions for executing tasks in (1) & (2).
 
---- File 4 ---
+--- File 4 ---<br/>
 ** timeseries-multi-stress.py -- similarly to File 2, except multiple stress periods are now applied.
 
---- File 5 ---
+--- File 5 ---<br/>
 ** timeseries-vary-energy.py -- similarly to File 2, except the energy level is not constant and can be increased or decreased within the simulation.
-
 
 The figures in the corresponding manuscript are produced by:
   - Fig 1 -- (schematic plot)
@@ -67,7 +67,7 @@ The figures in the corresponding manuscript are produced by:
 
 --- Getting Started ---
 
-The below steps describe the steps to run the model code with chosen regulatory architecture, update method, update rule and energy levels.
+The below steps describe the steps to run the model code with chosen regulatory architecture. To start a local copy of the repository needs to be retrieved.
 
 Create a clone of Github files locally on your computer through method (i) or (ii):
 - (i) Download directly using the 'Code' --> 'Download' buttons.
@@ -103,37 +103,77 @@ python <path-to-file>/timeseries-vary-energy.py [motif] [signal_status] [signal_
 for example
 ./scripts/timeseries.py ecoli True 15 1 3
 
-Note: When executing timeseries scripts, if signal_status = False, values for signal_0 and signal_length are to be set as 0.
+Notes:
+ - When executing timeseries scripts, if signal_status = False, values for signal_0 and signal_length are to be set as 0.
+ - To output figures for 'timeseries-vary-energy.py', the prerequisite requirements are the same simulations parameters but with constant energy level (using 'timeseries.py').
+
 
 --- Command-line arguments ---
 
-In addition to invoking each python script, they take some of these additional command-line parameters:
+In addition to invoking each python script, they take a subset of the following additional command-line parameters:
 
 [motif] -- motif being considered.
 
-[signal_status] -- tells the script whether the stressor is active or inactive through a boolean input, True or False.
+[signal_status] -- a boolean input (i.e. True or False) setting whether the stressor is active or inactive in simulations.
 
-[length_index] -- the length of the simulation. Script will run for 2*10^([length index]) steps, so 2 = 200, 3 = 2000 etc.
+[length_index] -- an integer initialising the length of the simulation. Script will run for 2*10^([length index]) steps, so 2 = 200, 3 = 2000 etc.
 
 [signal_0] -- an integer initialising the starting time-step of a stressor.
 
-[signal_length] -- length of the stressor.
+[signal_length] -- an integer initialising the length of the stressor.
 
-[direction] -- whether the energy level increase from low to high, or decreases from high to low in timeseries-vary-energy.py
+[direction] -- a string (i.e. increase or decrease) initialising whether the energy level increase from low to high, or decreases from high to low in timeseries-vary-energy.py
 
-[switchpoint] -- time-step when the energy level changes.
+[switchpoint] -- an integer initialising the time-step to change the energy level.
 
 
 --- Data and input files ---
 
 In the 'boolean-efflux' directory, the 'input-data' sub-directory homes the information about the regulatory network(s) that are considered. The files used for *E. coli* and *Salmonella* in the manuscript are included in this repository.
 
-For new regulatory networks, create initial condition and regulatory architecture comma-separted values files, using the example files in the 'input-data' directory for layout help.
-   - Initial condition file: If left empty, the script runs through all possible global states (2^M, with M = number of elements in regulatory architecture).
-   - Regulatory architecture files: Split into two indivudual files, a node-node and node-edge regulation file respectively.
+For new regulatory networks, 3 comma-separated values files (.csv) are required:
+1) Initial condition file [filename format: <motif>-ICs.csv]:<br/>
+|Gene_1|Gene_2|...|Gene_M|
+| --- | --- | --- | --- |
+| 1 | 0 | ... | 1 |
+| 0 | 0 | ... | 1 |
+|...| ...|...|... |
+| 0 | 0 | ... | 0 |
+<br/>If no row information is supplied below the column headers, all possible global states (2^M, with M = number of elements in regulatory architecture) are simulated.
+2) Regulatory architecture (node-node) [filename format: <motif>-regulation-nodes.csv]:<br/>
+|start node|end node|regulation|
+| --- | --- | --- |
+| Gene_1 | Gene_2 | 1 |
+| Gene_2 | Gene_2 | 1 |
+|...| ...|... |
+| Gene_M | Gene_1 | -1 |
+3) Regulatory architecture signal regulation (node-edge) [filename format: <motif>-regulation-edges.csv]:<br/>
+|regulator|target edge start|target edge end| regulation|
+| --- | --- | --- | --- |
+| signal | Gene_1 | Gene_2 | -1 |
+| signal | Gene_2 | Gene_2 | 1 |
+| signal |...| ...|... |
+| signal | Gene_M | Gene_1 | -1 |
 
+See provided files in the 'input-data' directory for further layout help. Files (1)-(3) need to be formatted in the above layout and file format for scripts to be executed.
 
 --- Output files ---
+
+The output of heatmaps.py includes
+
+ecoli-hm-inactive-count-energy=10.csv
+ecoli-hm-inactive-data-energy=10.csv
+ecoli-hm-inactive-energy=10.pdf
+network-summary.txt
+
+The output of timeseries.py, and similar scripts, includes
+ecoli-timeseries-0010-energy=100-cv.csv
+ecoli-timeseries-0010-energy=100-mean.csv
+ecoli-timeseries-0010-energy=100-std.csv
+ecoli-timeOutput-1101-energy=100.pdf
+network-summary.txt
+
+
 
 Script will execute and outputs can be found within 'boolean-efflux' directory.
 
