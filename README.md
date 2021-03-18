@@ -135,7 +135,7 @@ For new regulatory networks, 3 comma-separated values files (.csv) are required:
 1) Initial condition file [filename format: <motif>-ICs.csv]:<br/>
 
 | Gene_1 | Gene_2 | ... | Gene_M |
-| - | - | - | - |
+| :-: | :-: | :-: | :-: |
 | 1 | 0 | ... | 1 |
 | 0 | 0 | ... | 1 |
 | ... | ... | ... | ... |
