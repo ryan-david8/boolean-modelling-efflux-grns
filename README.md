@@ -132,25 +132,30 @@ In addition to invoking each python script, they take a subset of the following 
 In the 'boolean-efflux' directory, the 'input-data' sub-directory homes the information about the regulatory network(s) that are considered. The files used for *E. coli* and *Salmonella* in the manuscript are included in this repository.
 
 For new regulatory networks, 3 comma-separated values files (.csv) are required:
-1) Initial condition file [filename format: <motif>-ICs.csv]:
+1) Initial condition file [filename format: &lt;motif&gt;-ICs.csv]:
+
 | Gene_1 | Gene_2 | ... | Gene_M |
 | :-: | :-: | :-: | :-: |
 | 1 | 0 | ... | 1 |
 | 0 | 0 | ... | 1 |
 | ... | ... | ... | ... |
 | 0 | 0 | ... | 0 |
+
 If no row information is supplied below the column headers, all possible global states (2^M, with M = number of elements in regulatory architecture) are simulated.
 
-2) Regulatory architecture (node-node) [filename format: <motif>-regulation-nodes.csv]:<br/>
+2) Regulatory architecture (node-node) [filename format: &lt;motif&gt;-regulation-nodes.csv]:
+
 |start node|end node|regulation|
-| --- | --- | --- |
+| :-: | :-: | :-: |
 | Gene_1 | Gene_2 | 1 |
 | Gene_2 | Gene_2 | 1 |
 |...| ...|... |
 | Gene_M | Gene_1 | -1 |
-3) Regulatory architecture signal regulation (node-edge) [filename format: <motif>-regulation-edges.csv]:<br/>
+
+3) Regulatory architecture signal regulation (node-edge) [filename format: &lt;motif&gt;-regulation-edges.csv]:
+
 |regulator|target edge start|target edge end| regulation|
-| --- | --- | --- | --- |
+| :-: | :-: | :-: | :-: |
 | signal | Gene_1 | Gene_2 | -1 |
 | signal | Gene_2 | Gene_2 | 1 |
 | signal |...| ...|... |
