@@ -132,7 +132,7 @@ In addition to invoking each python script, they take a subset of the following 
 In the 'boolean-efflux' directory, the 'input-data' sub-directory homes the information about the regulatory network(s) that are considered. The files used for *E. coli* and *Salmonella* in the manuscript are included in this repository.
 
 For new regulatory networks, 3 comma-separated values files (.csv) are required:
-1) Initial condition file [filename format: &lt;motif&gt;-ICs.csv]:
+1) Initial condition file [filename format: &lt;motif&gt;-ICs.csv]: File contains the selected starting state(s) of the networks that are to be simulated. If no row information is supplied below the column headers, all possible global states (2^M, with M = number of elements in regulatory architecture) are simulated.
 
 | Gene_1 | Gene_2 | ... | Gene_M |
 | :-: | :-: | :-: | :-: |
@@ -141,9 +141,7 @@ For new regulatory networks, 3 comma-separated values files (.csv) are required:
 | ... | ... | ... | ... |
 | 0 | 0 | ... | 0 |
 
-If no row information is supplied below the column headers, all possible global states (2^M, with M = number of elements in regulatory architecture) are simulated.
-
-2) Regulatory architecture (node-node) [filename format: &lt;motif&gt;-regulation-nodes.csv]:
+2) Regulatory architecture (node-node) [filename format: &lt;motif&gt;-regulation-nodes.csv]: File contains all node-node regulation within the regulatory archtecture.
 
 |start node|end node|regulation|
 | :-: | :-: | :-: |
@@ -152,7 +150,7 @@ If no row information is supplied below the column headers, all possible global 
 |...| ...|... |
 | Gene_M | Gene_1 | -1 |
 
-3) Regulatory architecture signal regulation (node-edge) [filename format: &lt;motif&gt;-regulation-edges.csv]:
+3) Regulatory architecture signal regulation (node-edge) [filename format: &lt;motif&gt;-regulation-edges.csv]: File contains all regulation performed by the stressor/signal that is targetting edges within the wiring diagram.
 
 |regulator|target edge start|target edge end| regulation|
 | :-: | :-: | :-: | :-: |
@@ -165,22 +163,12 @@ See provided files in the 'input-data' directory for further layout help. Files 
 
 --- Output files ---
 
-The output of heatmaps.py includes
+The output of heatmaps.py includes all unique transition at each energy level and the probability of that transition happening (&lt;motif&gt;-hm-&lt;signal_status&gt;-count-energy=&lt;energy_levelx100&gt;.csv); the converted data in a format for plotting the heatmap (&lt;motif&gt;-hm-&lt;signal_status&gt;-data-energy=&lt;energy_levelx100&gt;.csv); and the corresponding heatmap figure (&lt;motif&gt;-hm-&lt;signal_status&gt;-energy=&lt;energy_levelx100&gt;.pdf).
 
-ecoli-hm-inactive-count-energy=10.csv
-ecoli-hm-inactive-data-energy=10.csv
-ecoli-hm-inactive-energy=10.pdf
-network-summary.txt
+The output of each timeseries script includes the mean, standard deviation (std) and coefficient of variation (cv) for each network components at all time-steps and energy levels, starting from each prescribed initial state of the network. The corresponding figure (&lt;motif&gt;-timeOutput-&lt;initial_state&gt;-energy=&lt;energy_levelx100&gt;.pdf) displays time evolution dynamics.
 
-The output of timeseries.py, and similar scripts, includes
-ecoli-timeseries-0010-energy=100-cv.csv
-ecoli-timeseries-0010-energy=100-mean.csv
-ecoli-timeseries-0010-energy=100-std.csv
-ecoli-timeOutput-1101-energy=100.pdf
-network-summary.txt
+Each script also outputs a summary file (network-summary.txt) containing information about the motif and Boolean modelling features.
 
-
-
-Script will execute and outputs can be found within 'boolean-efflux' directory.
+Outputs from succesfully executed scripts will be found within the 'output' directory within 'boolean-efflux'.
 
 If there are any questions regarding the included files, email ryan.mathbio@gmail.com
