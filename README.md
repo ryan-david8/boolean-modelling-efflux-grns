@@ -132,7 +132,7 @@ In addition to invoking each python script, they take a subset of the following 
 In the 'boolean-efflux' directory, the 'input-data' sub-directory homes the information about the regulatory network(s) that are considered. The files used for *E. coli* and *Salmonella* in the manuscript are included in this repository.
 
 For new regulatory networks, 3 comma-separated values files (.csv) are required:
-1) Initial condition file [filename format: <motif>-ICs.csv]:<br/>
+1) Initial condition file [filename format: <motif>-ICs.csv]:
 
 | Gene_1 | Gene_2 | ... | Gene_M |
 | :-: | :-: | :-: | :-: |
@@ -141,7 +141,8 @@ For new regulatory networks, 3 comma-separated values files (.csv) are required:
 | ... | ... | ... | ... |
 | 0 | 0 | ... | 0 |
 
-<br/>If no row information is supplied below the column headers, all possible global states (2^M, with M = number of elements in regulatory architecture) are simulated.
+If no row information is supplied below the column headers, all possible global states (2^M, with M = number of elements in regulatory architecture) are simulated.
+
 2) Regulatory architecture (node-node) [filename format: <motif>-regulation-nodes.csv]:<br/>
 |start node|end node|regulation|
 | --- | --- | --- |
