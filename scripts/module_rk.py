@@ -90,14 +90,18 @@ def node_groups(nodes_unique):
     """
     Separate list into separte lists for original networks nodes, external signals & ghost nodes
     """
-    # total
-    nodes_total = len(nodes_unique)
+
     # ghost nodes
     nodes_ghost = [ss for ss in nodes_unique if "ghost" in ss]
     nodes_ghost.sort()
     number_ghost = len(nodes_ghost)
     # signal node
     nodes_signal = [ss for ss in nodes_unique if "signal" in ss]
+    if not nodes_signal:
+        nodes_signal = ['signal']
+        nodes_total = len(nodes_unique)+1
+    else:
+        nodes_total = len(nodes_unique)
     number_signal = len(nodes_signal)
     # original grn nodes
     nodes_grn = [ss for ss in nodes_unique if ((not 'signal' in ss) and (
@@ -112,7 +116,6 @@ def node_groups(nodes_unique):
     if number_grn != numberNodesCheck:
         sys.exit("Error: Total nodes and sum of node sets do not match.")
     # print([number_grn, numberNodesCheck])
-
     return nodes_grn, nodes_ghost, nodes_signal, nodes_total, number_ghost, number_signal, number_grn
 
 
@@ -482,6 +485,29 @@ def signal_node_edge_regulation_matrix(interaction_matrix, node_edge_data, signa
     return sub_interactionMatrix
 
 
+def update_stateSync(state_0, number_grn, number_signal, matrix, total_nodes):
+    # # convert to list
+    state_0_list = list(state_0)
+    for i in range(number_grn):
+        booleanSum = np.array([matrix[i][j]*int(state_0[j])
+                               for j in range(total_nodes)]).sum()  # calculates sum for node update
+
+        # # Threshold update function
+        # node remains on if a positive sum of inputs
+        if (booleanSum > 0):
+            state_0_list[i] = "1"
+        # entitiy remains in same state if overall input is zero
+        elif (booleanSum == 0):
+            state_0_list[i] = state_0_list[i]
+        # if the sum doesn't satisfy any criteria above then the entity is turned off
+        else:
+            state_0_list[i] = "0"
+
+    extendedState_1 = "".join(state_0_list)
+    state_1 = extendedState_1[:number_grn]
+    return state_1, extendedState_1
+
+
 def update_state(state_0, number_grn, number_signal, matrix, total_nodes, N):
     """
     Boolean modelling asynchronous updating of nodes
@@ -510,8 +536,8 @@ def update_state(state_0, number_grn, number_signal, matrix, total_nodes, N):
         else:
             state_0_list[random_node] = "0"
 
-        extendedState_1 = "".join(state_0_list)
-        state_1 = extendedState_1[:number_grn]
+    extendedState_1 = "".join(state_0_list)
+    state_1 = extendedState_1[:number_grn]
 
     return state_1, extendedState_1
 
@@ -659,7 +685,8 @@ def time_evolution_fig(networkGlobalState_0, uniqueNodes, numberNodes, fig_timeS
     """
     Time evolution figure
     """
-    fig, axs = plt.subplots(2, 2, figsize=(3, 2.5), sharex='col', sharey='row',
+    subplot_rows, subplot_cols = time_evolution_subplot(numberNodes)
+    fig, axs = plt.subplots(subplot_rows, subplot_cols, figsize=(3, 2.5), sharex='col', sharey='row',
                             gridspec_kw={'hspace': 0.19, 'wspace': 0.08})
     # sharex='col',sharey = 'row', gridspec_kw = {'hspace': 0.2, 'wspace': 0.2}
     # constrained_layout=True
@@ -672,7 +699,7 @@ def time_evolution_fig(networkGlobalState_0, uniqueNodes, numberNodes, fig_timeS
 
     # fig.suptitle("Global state initial condition: %s" % str(networkGlobalState_0), fontsize=16)
     fig_subplotTitles = list(uniqueNodes)
-    subplot_rows, subplot_cols = time_evolution_subplot(numberNodes)
+    # subplot_rows, subplot_cols = time_evolution_subplot(numberNodes)
     x_label_subplots = [((subplot_rows-1)*subplot_cols)+n for n in range(0, subplot_cols)]
     y_label_subplots = [(n*subplot_cols) for n in range(0, subplot_rows)]
 

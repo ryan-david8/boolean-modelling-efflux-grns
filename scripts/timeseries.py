@@ -182,7 +182,7 @@ for energy in energy_levels:
                                      time_iter].astype(float).reset_index(drop=True)
             # print(df_sub_raw)
 
-            stat_summary = df_sub_raw.describe(exclude=[np.object])
+            stat_summary = df_sub_raw.describe()#exclude=[np.object]
             # print(stat_summary)
             mean = stat_summary.iloc[1, 2:len(df_raw_head)].tolist()
             df_mean.loc[len(df_mean)] = mean
