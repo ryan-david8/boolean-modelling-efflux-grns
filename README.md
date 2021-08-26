@@ -18,8 +18,8 @@ Before running, ensure you have access to:
     - argparse
     - netInfo (available on Github repository)
   - Required packages for visualisation:
-    - matplotlib (and sub-packages matplotlib.pyplot, matplotlib.patches, matplotlib.ticker, matplotlib.colors)
-    - scipy.cluster (and scipy.cluster.hierarchy)
+    - matplotlib (inc. sub-packages matplotlib.pyplot, matplotlib.patches, matplotlib.ticker, matplotlib.colors)
+    - scipy.cluster (inc. scipy.cluster.hierarchy)
     - seaborn
 
 ## Github files
