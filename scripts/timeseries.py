@@ -15,7 +15,7 @@ import netInfo as ni
 
 def Single_Cell(TOTAL_SIMS, number_SC):
     # # Randomly select X simulations for single-cell analysis
-    if TOTAL_SIMS > 2500:
+    if TOTAL_SIMS > 5000:
         rand_SC = rn.sample(range(0, TOTAL_SIMS), number_SC)
     else:
         rand_SC = [i for i in range(0, TOTAL_SIMS)]
@@ -373,8 +373,8 @@ def timeFigEfflux(stress_start, GS0, uniqueNodes, fig_timeSteps, motif, dir_out,
 
 
 def singleCell_fig(df_SC):
-    timeStart = 80
-    timeEnd = 200
+    timeStart = 120
+    timeEnd = 250
 
     # # Plot figure of signal time-evolution
     fig, ax = plt.subplots(figsize=(3, 2.5))
@@ -402,9 +402,10 @@ def singleCell_fig(df_SC):
     ax.set_xticks([xaxis_spacing*i for i in range(int(timeStart/xaxis_spacing), int(timeEnd/xaxis_spacing)+1)])
     ax.set_xticklabels([xaxis_spacing*i for i in range(int(timeStart/xaxis_spacing),int(timeEnd/xaxis_spacing)+1)], rotation=60, fontsize=6.5)
     ax.set_xlim(timeStart, timeEnd)
-    ax.set_ylabel('Simulation', size=8)
+    ax.set_ylabel('Simulation', size=8, labelpad=7)
     ax.set_yticks([i+0.5 for i in range(0,int(df_SC.shape[0]))])#, rotation=60)
-    ax.set_yticklabels(list(df_SC.index), rotation=20, fontsize=6.5)
+    # ax.set_yticklabels(list(df_SC.index), rotation=20, fontsize=6.5)
+    ax.tick_params(labelleft=False)
     ax.set_ylim(0, df_SC.shape[0])
     ax.tick_params(axis='both', which='major', pad=1)
     return fig
@@ -417,8 +418,8 @@ def timePulseFig(energy_levels, df_PTD, gene, ic):
     for i in range(0,len(energy_levels)):
         recs.append(mpatches.Rectangle((0,0),1,1,fc=colors[i]))
 
-    leftlim_x = 25
-    rightlim_x = 225
+    leftlim_x = 50
+    rightlim_x = 250
     x_spacing = 25
     axis_labelsize = 12
 
@@ -481,7 +482,7 @@ pathIn = '%s/input-data' % os.path.dirname(os.path.dirname(os.path.abspath(__fil
 pathOut = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Output location
 
 energy_levels = np.array([0.1, 0.5, 1])  # can use set levels or a linspace
-TOTAL_TIME = 300
+TOTAL_TIME = 425
 
 if args.signal_0 < 0:
     sys.exit("Error in 'Signal Range'. Value presented is negative.")
@@ -525,7 +526,7 @@ df_stats_head = list(groups[2])
 df_stats_head[:0] = ['time_step', 'signal_state']
 
 # # Single-simulation pulse data
-arr_Pulse = np.zeros(shape=(len(ics)*len(energy_levels)*2500*totGroups[2]*TOTAL_TIME, 6), dtype=np.float64)
+arr_Pulse = np.zeros(shape=(len(ics)*len(energy_levels)*5000*totGroups[2]*TOTAL_TIME, 6), dtype=np.float64)
 ind_pulse = 0
 #------------------------------------------------------------
 # # Simulations
@@ -541,7 +542,7 @@ for energy in energy_levels:
         TOTAL_SIMS = 1 if prob_threshold == 1 or prob_threshold == 0 else 10**args.length_index
     else:
         TOTAL_SIMS = 1 if prob_threshold == 0 else 10**args.length_index
-    number_SC = 2500 if TOTAL_SIMS >= 2500 else TOTAL_SIMS
+    number_SC = 5000 if TOTAL_SIMS >= 5000 else TOTAL_SIMS
     rand_SCs = Single_Cell(TOTAL_SIMS, number_SC)
 
     # # create empty array, pre-allocate size and data type
@@ -764,7 +765,7 @@ import matplotlib.patches as mpatches
 for GS0 in ics:#[ics[1]]:#
     """Timeseries figures"""
     fig_timeSteps = TOTAL_TIME
-    tick_stepsize = 25
+    tick_stepsize = 50
 
     # # network minus efflux
     fig_timeOther = timeFigOther(args.signal_0, GS0, (groups[2]+groups[1]), fig_timeSteps, args.motif, dir_out, energy_levels, tick_stepsize)
@@ -778,8 +779,16 @@ for GS0 in ics:#[ics[1]]:#
     fig_timeEfflux.savefig(fn_timeEfflux, format='pdf', bbox_inches='tight', transparent=False)
     plt.close(fig_timeEfflux)
 
-    for energy in energy_levels:
-        for gene in nodeOrder[:totGroups[2]]:
+    for gene in nodeOrder[:totGroups[2]]:
+        # # start time-step & mean or cv of pulse length figure
+        df_PTD = pd.read_csv('%s/%s-SC-pulse-stats-%s-%s.csv' % (dir_out, args.motif, gene, GS0))
+        figPulse_mean, figPulse_cv = timePulseFig(energy_levels, df_PTD, gene, GS0)
+        figPulse_mean.savefig('%s/%s-SC-%s-pulseStats-%s-mean.pdf' % (dir_out, args.motif, GS0, gene), format='pdf', bbox_inches='tight', transparent=False)
+        figPulse_cv.savefig('%s/%s-SC-%s-pulseStats-%s-cv.pdf' % (dir_out, args.motif, GS0, gene), format='pdf', bbox_inches='tight', transparent=False)
+        plt.close(figPulse_mean)
+        plt.close(figPulse_cv)
+
+        for energy in energy_levels:
             gene_index = nodeOrder.index(gene)
             df_SC = pd.read_csv('%s/%s-SC-%s-%s-energy=%.0f.csv' % (dir_out, args.motif, GS0, gene, float(energy)*100))
 
@@ -789,11 +798,3 @@ for GS0 in ics:#[ics[1]]:#
                 dir_out, args.motif, GS0, gene, float(energy)*100)
             fig_SC.savefig(fig_SCFilename, format='pdf', bbox_inches='tight', transparent=False)
             plt.close(fig_SC)
-
-            # # start time-step & mean or cv of pulse length figure
-            df_PTD = pd.read_csv('%s/%s-SC-pulse-stats-%s-%s.csv' % (dir_out, args.motif, gene, GS0))
-            figPulse_mean, figPulse_cv = timePulseFig(energy_levels, df_PTD, gene, GS0)
-            figPulse_mean.savefig('%s/%s-SC-%s-pulseStats-%s-mean.pdf' % (dir_out, args.motif, GS0, gene), format='pdf', bbox_inches='tight', transparent=False)
-            figPulse_cv.savefig('%s/%s-SC-%s-pulseStats-%s-cv.pdf' % (dir_out, args.motif, GS0, gene), format='pdf', bbox_inches='tight', transparent=False)
-            plt.close(figPulse_mean)
-            plt.close(figPulse_cv)
